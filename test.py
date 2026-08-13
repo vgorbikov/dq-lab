@@ -1,11 +1,16 @@
-from services.product_service import ProductService
+from datetime import datetime
 
-ps = ProductService()
-product = ps.new_product()
-print(ps.stocks)
+import psycopg2
 
-ps.new_supply(items=[(product, 3)])
-print(ps.stocks)
+from services.client_service import ClientService
+from write_raw_data import RawDataManager
 
-ps.new_shipment(items=[(product, 2)])
-print(ps.stocks)
+cs = ClientService()
+cl = cs.new_client()
+
+print(cs.clients)
+
+dm = RawDataManager()
+
+dm.write_client(client=cl, load_dttm=datetime.now())
+

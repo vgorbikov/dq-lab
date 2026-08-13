@@ -4,7 +4,7 @@ from typing import List
 from datetime import datetime, date
 from uuid import UUID
 
-from common import Address, Price
+from entities.common import Address, Price
 
 
 
