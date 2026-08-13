@@ -1,0 +1,18 @@
+services:
+  postgres:
+    image: postgres:alpine
+    container_name: dq-lab
+    environment:
+      POSTGRES_PASSWORD: dqdqdq
+      POSTGRES_USER: dq
+      POSTGRES_DB: dq-practice
+    ports:
+      - "5432:5432"
+    volumes:
+      # Сохранение данных между перезапусками
+      - postgres_data:/var/lib/postgresql
+      # Папка для пользовательских SQL-скриптов инициализации
+      - ./DDL:/docker-entrypoint-initdb.d
+
+volumes:
+  postgres_data:
