@@ -4,7 +4,7 @@ from datetime import datetime, date
 from uuid import UUID
 
 from entities.common import Address
-
+from entities.writable_entity import WritableEntity
 
 
 class Gender(Enum):
@@ -12,7 +12,7 @@ class Gender(Enum):
     FEMALE = 'Ж'
 
 @dataclass
-class Client():
+class Client(WritableEntity):
     client_id: UUID
     name: str
     birthdate: date

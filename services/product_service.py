@@ -6,6 +6,7 @@ from itertools import product
 
 from entities.client_service import Client, Gender, Address
 from entities.product_service import Product, ProductSize, ProductCategory, Shipment, ShipmentItem, Supply, SupplyItem, Stock
+from entities.common import Price, Currency
 from common_generators import transliteration
 
 
@@ -19,8 +20,8 @@ class ProductService():
             sku = transliteration(''.join([l[0] for l in s.split(' ')]).upper()) + str(random.randint(100, 999))
             self.sku_samples.append((sku, s))
 
-        self.products = []
-        self.categories = []
+        self.products: List[Product] = []
+        self.categories: List[ProductCategory] = []
         self.cat_templates: Dict[str, ProductCategory] = {}
         self.stocks: List[Stock] = []
         self.supplies: List[Supply] = []
@@ -97,13 +98,17 @@ class ProductService():
                 width=random.randint(1, 10),
                 height=random.randint(1, 10)
             ),
-            price=random.randint(100, 5000)
+            price=Price(
+                amount_value=random.randint(100, 10000),
+                currency=Currency.RUB
+            )
         )
 
         category.products.append(product)
 
         stock = Stock(product=product, quantity=0, last_update=creation_dttm)
         self.stocks.append(stock)
+        self.products.append(product)
 
         return product
 

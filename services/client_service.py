@@ -17,7 +17,7 @@ class ClientService():
         self.phone_gen = PhoneGenerator()
 
 
-    def new_client(self, full_fio_flg: bool = True, adult_flg: bool = True, registration_dttm: datetime = generate_date()) -> Client:
+    def new_client(self, full_fio_flg: bool = random.choice([True, False]), birthdate: datetime = generate_date(), registration_dttm: datetime = generate_date()) -> Client:
         phone = self.phone_gen.get_phone()
         while phone in [c.phone_number for c in self.clients]:
             phone = self.phone_gen.get_phone()
@@ -29,7 +29,7 @@ class ClientService():
         client = Client(
             client_id=uuid4(),
             name=fio,
-            birthdate=generate_date(adult_now=adult_flg),
+            birthdate=birthdate,
             gender=random.choice([Gender.MALE, Gender.FEMALE]),
             phone_number=phone,
             email=email,

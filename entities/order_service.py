@@ -5,11 +5,11 @@ from datetime import datetime, date
 from uuid import UUID
 
 from entities.common import Address, Price
-
+from entities.writable_entity import WritableEntity
 
 
 @dataclass
-class OrderClient():
+class OrderClient(WritableEntity):
     client_id: UUID
     name: str
     birthdate: date
@@ -17,13 +17,13 @@ class OrderClient():
     email: str
 
 @dataclass
-class ProductSize():
+class ProductSize(WritableEntity):
     length: int 
     width: int 
     height: int 
 
 @dataclass
-class OrderProduct():
+class OrderProduct(WritableEntity):
     product_id: UUID
     product_name: str
     weight_kg: int
@@ -31,8 +31,11 @@ class OrderProduct():
     sku: str
     price: Price
 
+    def __hash__(self):
+        return hash(self.product_id.hex)
+
 @dataclass
-class PickUpPoint():
+class PickUpPoint(WritableEntity):
     point_id: UUID
     address: Address 
     open_date: date
@@ -48,7 +51,7 @@ class OrderStatus(Enum):
     CANCELLED = 'CANCELLED'
 
 @dataclass
-class Order():
+class Order(WritableEntity):
     order_id: UUID
     positions: List["OrderPosition"]
     client: OrderClient
@@ -60,6 +63,6 @@ class Order():
     update_dttm: datetime
 
 @dataclass
-class OrderPosition():
+class OrderPosition(WritableEntity):
     product: OrderProduct
     quantity: int

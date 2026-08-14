@@ -7,7 +7,7 @@ CREATE SCHEMA IF NOT EXISTS raw;
 -- 1. Клиенты
 -- ============================================================
 CREATE TABLE raw.raw_client (
-    client_id TEXT PRIMARY KEY,
+    client_id TEXT,
     name TEXT,
     birthdate DATE,
     gender TEXT,
@@ -21,7 +21,8 @@ CREATE TABLE raw.raw_client (
     address_house TEXT,
     address_postal_code TEXT,
     src_system TEXT NOT NULL DEFAULT 'client_service',
-    load_dttm TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
+    load_dttm TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (client_id, load_dttm)
 );
 
 COMMENT ON TABLE raw.raw_client IS 'Сырые данные по клиентам';
@@ -51,7 +52,7 @@ COMMENT ON COLUMN raw.raw_client.load_dttm IS 'Время загрузки за�
 -- 2. Продукты
 -- ============================================================
 CREATE TABLE raw.raw_product (
-    product_id TEXT PRIMARY KEY,
+    product_id TEXT,
     product_name TEXT,
     description TEXT,
     category_id INT,
@@ -61,9 +62,10 @@ CREATE TABLE raw.raw_product (
     product_height INT,
     sku TEXT,
     price_value INT,
-    price_currency INT,
+    price_currency TEXT,
     src_system TEXT NOT NULL DEFAULT 'product_service',
-    load_dttm TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
+    load_dttm TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (product_id, load_dttm)
 );
 
 COMMENT ON TABLE raw.raw_product IS 'Сырые данные по продуктам';
@@ -90,11 +92,12 @@ COMMENT ON COLUMN raw.raw_product.load_dttm IS 'Время загрузки за
 -- 3. Категории продуктов
 -- ============================================================
 CREATE TABLE raw.raw_category (
-    category_id INT PRIMARY KEY,
+    category_id INT,
     category_name TEXT,
     description TEXT,
     src_system TEXT NOT NULL DEFAULT 'product_service',
-    load_dttm TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
+    load_dttm TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (category_id, load_dttm)
 );
 
 COMMENT ON TABLE raw.raw_category IS 'Сырые данные по категориям продуктов';
@@ -111,15 +114,14 @@ COMMENT ON COLUMN raw.raw_category.load_dttm IS 'Время загрузки з�
 -- 4. Валюты
 -- ============================================================
 CREATE TABLE raw.raw_currency (
-    currency_id INT PRIMARY KEY,
     currency_code TEXT,
     currency_name TEXT,
     src_system TEXT NOT NULL DEFAULT 'product_service',
-    load_dttm TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
+    load_dttm TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (currency_code, load_dttm)
 );
 
 COMMENT ON TABLE raw.raw_currency IS 'Сырые данные по валютам';
-COMMENT ON COLUMN raw.raw_currency.currency_id IS 'ID валюты';
 COMMENT ON COLUMN raw.raw_currency.currency_code IS 'Буквенный код валюты';
 COMMENT ON COLUMN raw.raw_currency.currency_name IS 'Наименование валюты';
 COMMENT ON COLUMN raw.raw_currency.src_system IS 'Наименование системы-источника';
@@ -137,7 +139,7 @@ CREATE TABLE raw.raw_stock (
     quantity INT,
     src_system TEXT NOT NULL DEFAULT 'product_service',
     load_dttm TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (product_id, last_update)
+    PRIMARY KEY (product_id, last_update, load_dttm)
 );
 
 COMMENT ON TABLE raw.raw_stock IS 'Сырые данные по складским остаткам';
@@ -155,10 +157,11 @@ COMMENT ON COLUMN raw.raw_stock.load_dttm IS 'Время загрузки зап
 -- 6. Поставки
 -- ============================================================
 CREATE TABLE raw.raw_supply (
-    supply_id TEXT PRIMARY KEY,
+    supply_id TEXT,
     supply_datetime TIMESTAMPTZ,
     src_system TEXT NOT NULL DEFAULT 'product_service',
-    load_dttm TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
+    load_dttm TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (supply_id, load_dttm)
 );
 
 COMMENT ON TABLE raw.raw_supply IS 'Сырые данные по поставкам';
@@ -181,7 +184,7 @@ CREATE TABLE raw.raw_supply_item (
     batch_number TEXT,
     src_system TEXT NOT NULL DEFAULT 'product_service',
     load_dttm TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (supply_id, product_id)
+    PRIMARY KEY (supply_id, product_id, load_dttm)
 );
 
 COMMENT ON TABLE raw.raw_supply_item IS 'Сырые данные по позициям поставок';
@@ -200,10 +203,11 @@ COMMENT ON COLUMN raw.raw_supply_item.load_dttm IS 'Время загрузки 
 -- 8. Отгрузки
 -- ============================================================
 CREATE TABLE raw.raw_shipment (
-    shipment_id TEXT PRIMARY KEY,
+    shipment_id TEXT,
     shipment_datetime TIMESTAMPTZ,
     src_system TEXT NOT NULL DEFAULT 'product_service',
-    load_dttm TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
+    load_dttm TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (shipment_id, load_dttm)
 );
 
 COMMENT ON TABLE raw.raw_shipment IS 'Сырые данные по отгрузкам';
@@ -225,7 +229,7 @@ CREATE TABLE raw.raw_shipment_item (
     quantity INT,
     src_system TEXT NOT NULL DEFAULT 'product_service',
     load_dttm TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (shipment_id, product_id)
+    PRIMARY KEY (shipment_id, product_id, load_dttm)
 );
 
 COMMENT ON TABLE raw.raw_shipment_item IS 'Сырые данные по позициям отгрузок';
@@ -243,17 +247,18 @@ COMMENT ON COLUMN raw.raw_shipment_item.load_dttm IS 'Время загрузк�
 -- 10. Заказы
 -- ============================================================
 CREATE TABLE raw.raw_order (
-    order_id TEXT PRIMARY KEY,
+    order_id TEXT,
     client_id TEXT,
     pick_up_point_id TEXT,
     status TEXT,
     track_number TEXT,
     total_price_value INT,
-    total_price_currency INT,
+    total_price_currency TEXT,
     creation_dttm TIMESTAMPTZ,
     update_dttm TIMESTAMPTZ,
     src_system TEXT NOT NULL DEFAULT 'order_service',
-    load_dttm TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
+    load_dttm TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (order_id, load_dttm)
 );
 
 COMMENT ON TABLE raw.raw_order IS 'Сырые данные по заказам';
@@ -285,7 +290,7 @@ CREATE TABLE raw.raw_order_position (
     quantity INT,
     src_system TEXT NOT NULL DEFAULT 'order_service',
     load_dttm TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (order_id, product_id)
+    PRIMARY KEY (order_id, product_id, load_dttm)
 );
 
 COMMENT ON TABLE raw.raw_order_position IS 'Сырые данные по позициям заказов';
@@ -303,7 +308,7 @@ COMMENT ON COLUMN raw.raw_order_position.load_dttm IS 'Время загрузк
 -- 12. Пункты выдачи
 -- ============================================================
 CREATE TABLE raw.raw_pick_up_point (
-    point_id TEXT PRIMARY KEY,
+    point_id TEXT,
     open_date DATE,
     address_country TEXT,
     address_region TEXT,
@@ -312,7 +317,8 @@ CREATE TABLE raw.raw_pick_up_point (
     address_house TEXT,
     address_postal_code TEXT,
     src_system TEXT NOT NULL DEFAULT 'order_service',
-    load_dttm TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
+    load_dttm TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (point_id, load_dttm)
 );
 
 COMMENT ON TABLE raw.raw_pick_up_point IS 'Сырые данные по пунктам выдачи';

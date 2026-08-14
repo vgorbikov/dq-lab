@@ -32,7 +32,7 @@ class OrderService():
         return point
     
 
-    def new_order(self, client: Client, positions: List[Tuple[Product, int]], point: PickUpPoint = new_pick_up_point(), creation_dttm: datetime = datetime.now()) -> Order:
+    def new_order(self, client: Client, positions: List[Tuple[Product, int]], point: PickUpPoint, creation_dttm: datetime = datetime.now()) -> Order:
         if client.client_id in [c.client_id for c in self.clients]:
             order_client = [c for c in self.clients if c.client_id == client.client_id][0]
         else:
@@ -43,7 +43,7 @@ class OrderService():
                     phone_number=client.phone_number,
                     email=client.email
                 )
-            self.clients.append(OrderClient)
+            self.clients.append(order_client)
         order_positions = []
         for position in positions:
             pos_product = position[0]

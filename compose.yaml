@@ -5,7 +5,7 @@ services:
     environment:
       POSTGRES_PASSWORD: dqdqdq
       POSTGRES_USER: dq
-      POSTGRES_DB: dq-practice
+      POSTGRES_DB: dq-lab
     ports:
       - "5432:5432"
     volumes:
