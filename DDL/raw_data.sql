@@ -43,9 +43,7 @@ COMMENT ON COLUMN raw.raw_client.src_system IS 'Наименование сис�
 COMMENT ON COLUMN raw.raw_client.load_dttm IS 'Время загрузки записи с источника';
 
 -- Индексы для поиска
--- CREATE INDEX idx_raw_client_email ON raw.raw_client(email);
--- CREATE INDEX idx_raw_client_phone ON raw.raw_client(phone_number);
--- CREATE INDEX idx_raw_client_load_dttm ON raw.raw_client(load_dttm);
+CREATE INDEX idx_raw_client_load_dttm ON raw.raw_client(load_dttm);
 
 
 -- ============================================================
@@ -83,9 +81,7 @@ COMMENT ON COLUMN raw.raw_product.price_currency IS 'Ссылка на валю�
 COMMENT ON COLUMN raw.raw_product.src_system IS 'Наименование системы-источника';
 COMMENT ON COLUMN raw.raw_product.load_dttm IS 'Время загрузки записи с источника';
 
--- CREATE INDEX idx_raw_product_category ON raw.raw_product(category_id);
--- CREATE INDEX idx_raw_product_sku ON raw.raw_product(sku);
--- CREATE INDEX idx_raw_product_load_dttm ON raw.raw_product(load_dttm);
+CREATE INDEX idx_raw_product_load_dttm ON raw.raw_product(load_dttm);
 
 
 -- ============================================================
@@ -107,7 +103,7 @@ COMMENT ON COLUMN raw.raw_category.description IS 'Описание катего
 COMMENT ON COLUMN raw.raw_category.src_system IS 'Наименование системы-источника';
 COMMENT ON COLUMN raw.raw_category.load_dttm IS 'Время загрузки записи с источника';
 
--- CREATE INDEX idx_raw_category_load_dttm ON raw.raw_category(load_dttm);
+CREATE INDEX idx_raw_category_load_dttm ON raw.raw_category(load_dttm);
 
 
 -- ============================================================
@@ -149,8 +145,8 @@ COMMENT ON COLUMN raw.raw_stock.quantity IS 'Остаток, единиц про
 COMMENT ON COLUMN raw.raw_stock.src_system IS 'Наименование системы-источника';
 COMMENT ON COLUMN raw.raw_stock.load_dttm IS 'Время загрузки записи с источника';
 
--- CREATE INDEX idx_raw_stock_product ON raw.raw_stock(product_id);
--- CREATE INDEX idx_raw_stock_load_dttm ON raw.raw_stock(load_dttm);
+CREATE INDEX idx_raw_stock_product ON raw.raw_stock(product_id);
+CREATE INDEX idx_raw_stock_load_dttm ON raw.raw_stock(load_dttm);
 
 
 -- ============================================================
@@ -274,11 +270,10 @@ COMMENT ON COLUMN raw.raw_order.update_dttm IS 'Время последнего 
 COMMENT ON COLUMN raw.raw_order.src_system IS 'Наименование системы-источника';
 COMMENT ON COLUMN raw.raw_order.load_dttm IS 'Время загрузки записи с источника';
 
--- CREATE INDEX idx_raw_order_client ON raw.raw_order(client_id);
--- CREATE INDEX idx_raw_order_status ON raw.raw_order(status);
--- CREATE INDEX idx_raw_order_creation_dttm ON raw.raw_order(creation_dttm);
--- CREATE INDEX idx_raw_order_update_dttm ON raw.raw_order(update_dttm);
--- CREATE INDEX idx_raw_order_load_dttm ON raw.raw_order(load_dttm);
+CREATE INDEX idx_raw_order_client ON raw.raw_order(client_id);
+CREATE INDEX idx_raw_order_id ON raw.raw_order(order_id);
+CREATE INDEX idx_raw_order_status ON raw.raw_order(status);
+CREATE INDEX idx_raw_order_load_dttm ON raw.raw_order(load_dttm);
 
 
 -- ============================================================
@@ -300,8 +295,9 @@ COMMENT ON COLUMN raw.raw_order_position.quantity IS 'Количество ед�
 COMMENT ON COLUMN raw.raw_order_position.src_system IS 'Наименование системы-источника';
 COMMENT ON COLUMN raw.raw_order_position.load_dttm IS 'Время загрузки записи с источника';
 
--- CREATE INDEX idx_raw_order_position_product ON raw.raw_order_position(product_id);
--- CREATE INDEX idx_raw_order_position_load_dttm ON raw.raw_order_position(load_dttm);
+CREATE INDEX idx_raw_order_position_product ON raw.raw_order_position(product_id);
+CREATE INDEX idx_raw_order_position_load_dttm ON raw.raw_order_position(load_dttm);
+CREATE INDEX idx_raw_order_position_order_id ON raw.raw_order_position(order_id);
 
 
 -- ============================================================

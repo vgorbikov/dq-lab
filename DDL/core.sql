@@ -19,8 +19,11 @@ CREATE TABLE core.dim_client (
     src_system TEXT,
     effective_from_dttm TIMESTAMPTZ NOT NULL,
     effective_to_dttm TIMESTAMPTZ NOT NULL DEFAULT '9999-12-31 23:59:59',
+    version INT,
     is_current BOOLEAN DEFAULT TRUE
 );
+
+create index idx_dim_client_client_id on core.dim_client(client_id);
 
 -- 2. dim_product (SCD Type 2) - без изменений
 CREATE TABLE core.dim_product (
@@ -41,8 +44,11 @@ CREATE TABLE core.dim_product (
     src_system TEXT,
     effective_from_dttm TIMESTAMPTZ NOT NULL,
     effective_to_dttm TIMESTAMPTZ NOT NULL DEFAULT '9999-12-31 23:59:59',
+    version INT,
     is_current BOOLEAN DEFAULT TRUE
 );
+
+create index idx_dim_product_product_id on core.dim_product(product_id);
 
 -- 3. dim_pick_up_point (SCD Type 2) - без изменений
 CREATE TABLE core.dim_pick_up_point (
@@ -58,6 +64,7 @@ CREATE TABLE core.dim_pick_up_point (
     src_system TEXT,
     effective_from_dttm TIMESTAMPTZ NOT NULL,
     effective_to_dttm TIMESTAMPTZ NOT NULL DEFAULT '9999-12-31 23:59:59',
+    version INT,
     is_current BOOLEAN DEFAULT TRUE
 );
 
@@ -66,6 +73,7 @@ CREATE TABLE core.dim_currency (
     currency_sk BIGSERIAL PRIMARY KEY,
     currency_code TEXT NOT NULL UNIQUE,
     currency_name TEXT,
+    version INT,
     src_system TEXT
 );
 
@@ -84,7 +92,8 @@ CREATE TABLE core.fact_order_position (
     creation_dttm TIMESTAMPTZ,        
     update_dttm TIMESTAMPTZ,            
     effective_from_dttm TIMESTAMPTZ NOT NULL,
-    effective_to_dttm TIMESTAMPTZ NOT NULL DEFAULT '9999-12-31 23:59:59'
+    effective_to_dttm TIMESTAMPTZ NOT NULL DEFAULT '9999-12-31 23:59:59',
+    version INT,
 );
 
 -- 6. fact_supply_position (без date_sk!)
@@ -94,7 +103,8 @@ CREATE TABLE core.fact_supply_position (
     product_sk BIGINT REFERENCES core.dim_product(product_sk),
     quantity INT,
     batch_number TEXT,
-    supply_datetime TIMESTAMPTZ     
+    supply_datetime TIMESTAMPTZ,
+    version INT
 );
 
 -- 7. fact_shipment_position (без date_sk!)
@@ -103,7 +113,8 @@ CREATE TABLE core.fact_shipment_position (
     shipment_id TEXT NOT NULL,
     product_sk BIGINT REFERENCES core.dim_product(product_sk),
     quantity INT,
-    shipment_datetime TIMESTAMPTZ 
+    shipment_datetime TIMESTAMPTZ,
+    version INT
 );
 
 -- 8. fact_stock_snapshot (без date_sk!)
@@ -111,5 +122,6 @@ CREATE TABLE core.fact_stock_snapshot (
     product_sk BIGINT REFERENCES core.dim_product(product_sk),
     snapshot_dttm TIMESTAMPTZ,
     quantity INT,
+    version INT,
     PRIMARY KEY (product_sk, snapshot_dttm)
 );
