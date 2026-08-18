@@ -127,6 +127,7 @@ class ProductService():
             s_items.append(s_item)
             stock = [s for s in self.stocks if s.product.product_id == s_item.product.product_id][0]
             stock.quantity += item[1]
+            stock.last_update = dttm
 
         supply = Supply(
             supply_id=uuid4(),
@@ -152,6 +153,7 @@ class ProductService():
             s_items.append(s_item)
             stock = [s for s in self.stocks if s.product.product_id == s_item.product.product_id][0]
             stock.quantity -= item[1]
+            stock.last_update = dttm
 
         shipment = Shipment(
             shipment_id=uuid4(),

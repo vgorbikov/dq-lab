@@ -84,7 +84,7 @@ CREATE TABLE core.fact_order_position (
     client_sk BIGINT REFERENCES core.dim_client(client_sk),
     pick_up_point_sk BIGINT REFERENCES core.dim_pick_up_point(point_sk),
     product_sk BIGINT REFERENCES core.dim_product(product_sk),
-    currency_sk BIGINT REFERENCES core.dim_currency(currency_sk),
+    total_price_currency_sk BIGINT REFERENCES core.dim_currency(currency_sk),
     position_quantity INT,
     status TEXT,
     track_number TEXT,
@@ -93,7 +93,7 @@ CREATE TABLE core.fact_order_position (
     update_dttm TIMESTAMPTZ,            
     effective_from_dttm TIMESTAMPTZ NOT NULL,
     effective_to_dttm TIMESTAMPTZ NOT NULL DEFAULT '9999-12-31 23:59:59',
-    version INT,
+    version INT
 );
 
 -- 6. fact_supply_position (без date_sk!)

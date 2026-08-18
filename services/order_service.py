@@ -35,6 +35,8 @@ class OrderService():
     def new_order(self, client: Client, positions: List[Tuple[Product, int]], point: PickUpPoint, creation_dttm: datetime = datetime.now()) -> Order:
         if client.client_id in [c.client_id for c in self.clients]:
             order_client = [c for c in self.clients if c.client_id == client.client_id][0]
+            if client.phone_number != order_client.phone_number:
+                order_client.phone_number = client.phone_number
         else:
             order_client = OrderClient(
                     client_id=client.client_id,     # оставляем ID исходного клиента
@@ -48,7 +50,7 @@ class OrderService():
         for position in positions:
             pos_product = position[0]
             product = OrderProduct(
-                product_id=uuid4(),                 # намеренно генерируем новый ID для того же продукта
+                product_id=pos_product.product_id,
                 product_name=pos_product.product_name,
                 weight_kg=pos_product.weight_kg,
                 size=pos_product.size,
