@@ -73,8 +73,7 @@ CREATE TABLE core.dim_currency (
     currency_sk BIGSERIAL PRIMARY KEY,
     currency_code TEXT NOT NULL UNIQUE,
     currency_name TEXT,
-    version INT,
-    src_system TEXT
+    version INT
 );
 
 -- 5. fact_order_position (без date_sk!)
@@ -82,9 +81,13 @@ CREATE TABLE core.fact_order_position (
     order_position_sk BIGSERIAL PRIMARY KEY,
     order_id TEXT NOT NULL,
     client_sk BIGINT REFERENCES core.dim_client(client_sk),
+    client_id text,
     pick_up_point_sk BIGINT REFERENCES core.dim_pick_up_point(point_sk),
+    pick_up_point_id text,
     product_sk BIGINT REFERENCES core.dim_product(product_sk),
+    product_id text,
     total_price_currency_sk BIGINT REFERENCES core.dim_currency(currency_sk),
+    total_price_currency_code text,
     position_quantity INT,
     status TEXT,
     track_number TEXT,
@@ -101,6 +104,7 @@ CREATE TABLE core.fact_supply_position (
     supply_position_sk BIGSERIAL PRIMARY KEY,
     supply_id TEXT NOT NULL,
     product_sk BIGINT REFERENCES core.dim_product(product_sk),
+    product_id text,
     quantity INT,
     batch_number TEXT,
     supply_datetime TIMESTAMPTZ,
@@ -112,6 +116,7 @@ CREATE TABLE core.fact_shipment_position (
     shipment_position_sk BIGSERIAL PRIMARY KEY,
     shipment_id TEXT NOT NULL,
     product_sk BIGINT REFERENCES core.dim_product(product_sk),
+    product_id text,
     quantity INT,
     shipment_datetime TIMESTAMPTZ,
     version INT
@@ -120,6 +125,7 @@ CREATE TABLE core.fact_shipment_position (
 -- 8. fact_stock_snapshot (без date_sk!)
 CREATE TABLE core.fact_stock_snapshot (
     product_sk BIGINT REFERENCES core.dim_product(product_sk),
+    product_id text,
     snapshot_dttm TIMESTAMPTZ,
     quantity INT,
     version INT,

@@ -32,7 +32,7 @@ class ClientService():
             birthdate=birthdate,
             gender=random.choice([Gender.MALE, Gender.FEMALE]),
             phone_number=phone,
-            email=email,
+            email=email if random.choice([True, False]) else None,
             residence_address=self.address_gen.get_address(),
             registration_dttm=registration_dttm
         )

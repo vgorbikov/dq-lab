@@ -44,12 +44,12 @@ where 1=1
 INSERT INTO core.dim_currency (
     currency_code 
     , currency_name 
-    , src_system 
+    , version
 )
 SELECT 
     currency_code 
     , currency_name 
-    , src_system 
+    , 1 as version
 FROM raw.raw_currency;
 
 INSERT INTO core.dim_pick_up_point (

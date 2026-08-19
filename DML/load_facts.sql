@@ -1,9 +1,13 @@
 INSERT INTO core.fact_order_position (
 	order_id 
 	, client_sk 
+	, client_id
 	, pick_up_point_sk 
+	, pick_up_point_id
 	, product_sk 
+	, product_id
 	, total_price_currency_sk 
+	, total_price_currency_code
 	, position_quantity 
 	, status 
 	, track_number 
@@ -17,9 +21,13 @@ INSERT INTO core.fact_order_position (
 SELECT 
     ord.order_id 
     , cli.client_sk 
+	, cli.client_id
     , poi.point_sk as pick_up_point_sk 
+	, poi.point_id as pick_up_point_id
     , prod.product_sk 
+	, prod.product_id
     , cur.currency_sk as total_price_currency_sk
+	, cur.currency_code as total_price_currency_code
     , op.quantity as position_quantity
     , ord.status 
     , ord.track_number 
@@ -56,6 +64,7 @@ on 1=1
 INSERT INTO core.fact_shipment_position (
 	shipment_id
 	, product_sk 
+	, product_id
 	, quantity 
 	, shipment_datetime 
 	, "version" 
@@ -63,6 +72,7 @@ INSERT INTO core.fact_shipment_position (
 SELECT 
     s.shipment_id
 	, p.product_sk 
+	, p.product_id
 	, si.quantity 
 	, s.shipment_datetime 
 	, 1 as version
@@ -80,6 +90,7 @@ on 1=1
 INSERT INTO core.fact_supply_position (
 	supply_id
 	, product_sk 
+	, product_id
 	, quantity 
 	, batch_number
 	, supply_datetime 
@@ -88,6 +99,7 @@ INSERT INTO core.fact_supply_position (
 SELECT 
     s.supply_id
 	, p.product_sk 
+	, p.product_id
 	, si.quantity 
 	, si.batch_number
 	, s.supply_datetime  
@@ -105,12 +117,14 @@ on 1=1
 
 INSERT INTO core.fact_stock_snapshot (
 	product_sk 
+	, product_id
 	, snapshot_dttm
 	, quantity
 	, "version" 
 )
 SELECT 
     p.product_sk 
+	, p.product_id
 	, st.load_dttm as snapshot_dttm
 	, st.quantity
 	, 1 as version

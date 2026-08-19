@@ -9,7 +9,7 @@ from entities.common import Currency, Price
 
 from services.client_service import ClientService
 from services.product_service import ProductService
-from services.order_service import OrderService
+from services.order_service import OrderService, OrderStatus
 from raw_data_translation import RawDataManager
 
 from common_generators import PhoneGenerator
@@ -21,6 +21,14 @@ START_TIME = datetime(2023, 1, 1, 0, 0, 1, 1, timezone(timedelta(hours=3)))
 ITER_COUNT = 3000
 
 phone_gen = PhoneGenerator()
+
+
+def get_next_order_status(stat: OrderStatus):
+    itms = list(OrderStatus._member_map_.items())
+    for i in range(len(itms)):
+        if itms[i][1] == stat:
+            return itms[i+1][1]
+
 
 def snaphot(dttm: datetime, cli: ClientService, prod: ProductService, ord: OrderService, dm: RawDataManager):
     for client in cli.clients:
@@ -146,6 +154,17 @@ for i in range(ITER_COUNT):
             amount_value=random.randint(200, 3000),
             currency=Currency.RUB
         )
+
+    if len(order_service.orders) > 1 and random.randint(0, 100) > 20:                       # обновление статуса по заказу
+        orders = [o for o in order_service.orders if \
+            o.status != OrderStatus.FINISHED \
+            and o.status != OrderStatus.CANCELLED \
+            and random.randint(0, 100) > 90]
+        for o in orders:
+            if random.randint(0, 100) > 90:
+                o.status = OrderStatus.CANCELLED
+            else:
+                o.status = get_next_order_status(o.status)
 
     snaphot(last_time, client_service, product_service, order_service, rwm)
     info_string = f'Итерация {i}/{ITER_COUNT}; Время эмуляции: {last_time.isoformat(timespec="minutes", sep=" ")}'
