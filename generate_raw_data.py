@@ -116,7 +116,7 @@ for i in range(ITER_COUNT):
         point = random.choice(order_service.pick_up_points)
         products = list(set([random.choice(product_service.products) for i in range(random.randint(1, 10))]))
         stocks = [[s for s in product_service.stocks if p.product_id == s.product.product_id][0] for p in products]
-        positions = [(products[i], random.randint(1, stocks[i].quantity)) for i in range(len(products)) if stocks[i].quantity > 0]
+        positions = [(products[i], random.randint(1, min(stocks[i].quantity, 3))) for i in range(len(products)) if stocks[i].quantity > 0]
         if len(positions) != 0:
             order_service.new_order(
                 client=client,
@@ -155,16 +155,18 @@ for i in range(ITER_COUNT):
             currency=Currency.RUB
         )
 
-    if len(order_service.orders) > 1 and random.randint(0, 100) > 20:                       # обновление статуса по заказу
+    if len(order_service.orders) > 1 and random.randint(0, 100) > 10:                       # обновление статуса по заказу
         orders = [o for o in order_service.orders if \
             o.status != OrderStatus.FINISHED \
             and o.status != OrderStatus.CANCELLED \
-            and random.randint(0, 100) > 90]
+            and not o.is_having_updates \
+            and random.randint(0, 100) > 60]
         for o in orders:
-            if random.randint(0, 100) > 90:
+            if random.randint(0, 100) > 95:
                 o.status = OrderStatus.CANCELLED
             else:
                 o.status = get_next_order_status(o.status)
+            o.update_dttm = last_time
 
     snaphot(last_time, client_service, product_service, order_service, rwm)
     info_string = f'Итерация {i}/{ITER_COUNT}; Время эмуляции: {last_time.isoformat(timespec="minutes", sep=" ")}'

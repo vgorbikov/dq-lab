@@ -41,7 +41,6 @@ FROM raw.raw_order_position op
 join raw.raw_order ord 
 on 1=1
 	and op.order_id = ord.order_id 
-	and op.load_dttm = ord.load_dttm
 join core.dim_client cli
 on 1=1
 	and ord.client_id = cli.client_id
@@ -80,7 +79,6 @@ FROM raw.raw_shipment s
 join raw.raw_shipment_item si
 on 1=1
 	and s.shipment_id = si.shipment_id 
-	and s.load_dttm = si.load_dttm 
 join core.dim_product p 
 on 1=1
 	and p.product_id = si.product_id 
@@ -108,7 +106,6 @@ FROM raw.raw_supply s
 join raw.raw_supply_item si
 on 1=1
 	and s.supply_id = si.supply_id 
-	and s.load_dttm = si.load_dttm 
 join core.dim_product p 
 on 1=1
 	and p.product_id = si.product_id 

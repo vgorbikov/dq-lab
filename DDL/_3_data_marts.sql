@@ -13,16 +13,15 @@ COMMENT ON SCHEMA mart IS 'Слой прикладных витрин данны
 -- ============================================================
 CREATE OR REPLACE VIEW mart.mart_agg_client_order AS
 SELECT 
-    -- Данные заказа
     fop.order_id,
     fop.status,
     fop.track_number,
+    count(1) as positions_count,
     fop.total_price_value,
-    fop.creation_dttm,
-    fop.update_dttm,
-    -- Данные валюты заказа
     dc.currency_code AS total_price_currency_code,
     dc.currency_name AS total_price_currency_name,
+    fop.creation_dttm,
+    fop.update_dttm,
     -- Данные клиента (из dim_client)
     c.client_id,
     c.name AS client_name,
@@ -59,7 +58,38 @@ LEFT JOIN core.dim_pick_up_point pp
 LEFT JOIN core.dim_currency dc 
     ON fop.total_price_currency_sk = dc.currency_sk
 -- Берем только актуальные версии факта (последний статус)
-WHERE fop.effective_to_dttm = '9999-12-31 23:59:59'::TIMESTAMPTZ;
+WHERE fop.effective_to_dttm = '9999-12-31 23:59:59+03'::TIMESTAMPTZ
+group by
+	fop.order_id
+    , fop.status
+    , fop.track_number
+    , fop.total_price_value
+    , fop.creation_dttm
+    , fop.update_dttm
+	, dc.currency_code
+	, dc.currency_name
+	, c.client_id
+    , c.name
+    , c.birthdate
+    , c.gender
+    , c.phone_number
+    , c.email
+    , c.registration_dttm
+    , c.address_country
+    , c.address_region
+    , c.address_city
+    , c.address_street
+    , c.address_house
+    , c.address_postal_code
+    -- Данные пункта выдачи (из dim_pick_up_point)
+    , pp.point_id
+    , pp.open_date
+    , pp.address_country
+    , pp.address_region
+    , pp.address_city
+    , pp.address_street
+    , pp.address_house
+    , pp.address_postal_code;
 
 COMMENT ON VIEW mart.mart_agg_client_order IS 
 'Сводные данные по заказам - информация о клиенте, пункте выдачи и самом заказе';
@@ -115,7 +145,7 @@ JOIN core.dim_client c
     ON fop.client_sk = c.client_sk 
     AND c.is_current = TRUE
 -- Берем только актуальные версии факта (последний статус)
-WHERE fop.effective_to_dttm = '9999-12-31 23:59:59'::TIMESTAMPTZ;
+WHERE fop.effective_to_dttm = '9999-12-31 23:59:59+03'::TIMESTAMPTZ;
 
 COMMENT ON VIEW mart.mart_product_consumer IS 
 'Данные о спросе - какие клиенты покупают какие товары с агрегацией';

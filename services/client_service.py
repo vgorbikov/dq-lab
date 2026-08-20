@@ -17,10 +17,13 @@ class ClientService():
         self.phone_gen = PhoneGenerator()
 
 
-    def new_client(self, full_fio_flg: bool = random.choice([True, False]), birthdate: datetime = generate_date(), registration_dttm: datetime = generate_date()) -> Client:
+    def new_client(self, full_fio_flg: bool = None, birthdate: datetime = generate_date(), registration_dttm: datetime = generate_date()) -> Client:
         phone = self.phone_gen.get_phone()
         while phone in [c.phone_number for c in self.clients]:
             phone = self.phone_gen.get_phone()
+
+        if full_fio_flg is None:
+            full_fio_flg = random.choice([True, False])
 
         fio = self.fio_gen.get_fio(is_full=full_fio_flg)
         splitfio = fio.split(' ')

@@ -4,6 +4,7 @@ import random
 from datetime import datetime, date
 from itertools import product
 
+from entities.common import Price, Currency
 from entities.client_service import Client
 from entities.product_service import Product
 from entities.order_service import Order, OrderClient, OrderPosition, OrderProduct, OrderStatus, PickUpPoint
@@ -46,7 +47,7 @@ class OrderService():
                     email=client.email
                 )
             self.clients.append(order_client)
-        order_positions = []
+        order_positions: List[OrderPosition] = []
         for position in positions:
             pos_product = position[0]
             product = OrderProduct(
@@ -65,7 +66,10 @@ class OrderService():
             client=order_client,
             status=OrderStatus.CREATED,
             pick_up_point=point,
-            total_price=product.price,
+            total_price=Price(
+                amount_value=sum([pos.product.price.amount_value*pos.quantity for pos in order_positions]),
+                currency=Currency.RUB
+            ),
             track_number=f'{random.randint(1000, 9999)}-{random.randint(1000, 9999)}',
             creation_dttm=creation_dttm,
             update_dttm=creation_dttm

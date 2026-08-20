@@ -80,10 +80,12 @@ class ProductService():
                 self.cat_templates[t] = cat
 
 
-    def new_product(self, add_description: bool = random.choice([True, False]), creation_dttm: datetime = datetime.now()) -> Product:
+    def new_product(self, add_description: bool = None, creation_dttm: datetime = datetime.now()) -> Product:
         '''
         Создаёт новый продукт
         '''
+        if add_description is None:
+            add_description = random.choice([True, False])
         sku_sample = random.choice(self.sku_samples)
         category = [c[1] for c in self.cat_templates.items() if c[0] in sku_sample[1].split(' ')][0]
         product = Product(
